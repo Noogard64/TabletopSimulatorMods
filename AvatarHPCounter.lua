@@ -1,5 +1,4 @@
--- Universal Counter Tokens      coded by: MrStump
-
+--New Avatar Card HP Counter
 --Saves the count value into a table (data_to_save) then encodes it into the Tabletop save
 function onSave()
     local data_to_save = {saved_count = count}
@@ -9,7 +8,7 @@ end
 
 --Loads the saved data then creates the buttons
 function onload(saved_data)
-    generateButtonParamiters()
+    generateButtonParameters()
     --Checks if there is a saved data. If there is, it gets the saved value for 'count'
     if saved_data != '' then
         local loaded_data = JSON.decode(saved_data)
@@ -36,8 +35,11 @@ end
 
 --Activates when + is hit. Adds 1 to 'count' then updates the display button.
 function increase()
-    count = count + 1
-    updateDisplay()
+	local maxHP = tonumber(self.getDescription())
+	if (count + 1) <= maxHP then
+		count = count + 1
+		updateDisplay()
+	end
 end
 
 --Activates when - is hit. Subtracts 1 from 'count' then updates the display button.
@@ -51,8 +53,12 @@ end
 
 --Activates when + is hit. Adds 5 to 'count' then updates the display button.
 function increase5()
-    count = count + 5
-    updateDisplay()
+	
+	local maxHP = tonumber(self.getDescription())
+	if (count + 5) <= maxHP then
+		count = count + 5
+		updateDisplay()
+	end
 end
 
 --Activates when - is hit. Subtracts 5 from 'count' then updates the display button.
@@ -87,22 +93,12 @@ function updateDisplay()
     self.editButton(b_display)
 end
 
-function updateMaxHP()
-	local description = self.getDescription()
-	b_maxHP.label = 'MAXHP '..description
-	self.editButton(b_maxHP)
-end
-
 --This is activated when onload runs. This sets all paramiters for our buttons.
 --I do not have to put this all into a function, but I prefer to do it this way.
-function generateButtonParamiters()
+function generateButtonParameters()
     b_display = {
         index = 0, click_function = 'customSet', function_owner = self, label = '',
         position = {1.35,0.1,0}, width = 600, height = 600, font_size = 500
-    }
-	b_maxHP = {
-        click_function = 'updateMaxHP', label = self.getDescription(),
-        position = {1.35,0.1,-0.75}, width = 600, height = 150, font_size = 100
     }
 	
     b_plus = {
